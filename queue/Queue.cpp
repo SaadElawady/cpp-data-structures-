@@ -179,5 +179,4 @@ int main()
     q1 = q1;
     q1.display();
     return 0;
- 
 }
