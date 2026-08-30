@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdexcept>
+#include <string>
 using namespace std;
 
 template <typename T>
@@ -152,18 +153,49 @@ stack<T>& stack<T>::operator= (const stack<T>& s)
     return *this;
 }
 
+   string func(string expression)
+    {
+        string output;
+        stack<char> c;
+        for (int i=0; i<expression.length(); i++)
+        if (expression[i] >= '0' && expression[i] <= '9')
+        {
+            output += expression[i];
+            output += ' ';
+        }
+        else if (expression[i] == '+' || expression[i] == '-')
+        {
+            if (c.empty())
+            c.push(expression[i]);
+            else
+            {
+                output += c.pop();
+                output += ' ';
+                c.push(expression[i]);
+            }
+        }
+        else if(expression[i] == '*' || expression[i] == '/')
+        {
+            if(c.empty())
+            c.push(expression[i]);
+            else if (c.top() == '*' || c.top() == '/')
+            {
+                output += c.pop();
+                output += ' ';
+                c.push(expression[i]);
+            }
+            else
+            c.push(expression[i]);
+        }
+        while(!c.empty())
+        output += c.pop();
+        return output;
+    }
+
 int main()
 {
-stack<char> c;
-
-c.push('(');
-c.push('[');
-c.push('{');
-
-//cout << c.pop() << '\n';
-//cout << c.pop() << '\n';
-//cout << c.pop() << '\n';
-stack<char> c2 = c;
-c2 = c2;
-c2.display();
+    string s = "2-3+4-5";
+    s = func(s);
+    cout << s;
+    return 0;
 }
