@@ -161,41 +161,104 @@ stack<T>& stack<T>::operator= (const stack<T>& s)
         if (expression[i] >= '0' && expression[i] <= '9')
         {
             output += expression[i];
+            if (i <expression.length() -1 && expression[i+1] < '0' || expression[i+1] > '9')
             output += ' ';
         }
         else if (expression[i] == '+' || expression[i] == '-')
         {
-            if (c.empty())
+            if (c.empty() || c.top() == '(')
             c.push(expression[i]);
             else
             {
-                output += c.pop();
-                output += ' ';
+                while (!c.empty() && c.top() != '(')
+                {
+                    output += c.pop();
+                    output += ' ';
+                }
                 c.push(expression[i]);
             }
         }
         else if(expression[i] == '*' || expression[i] == '/')
         {
-            if(c.empty())
+            if(c.empty() || c.top() =='(')
             c.push(expression[i]);
+            
             else if (c.top() == '*' || c.top() == '/')
             {
-                output += c.pop();
-                output += ' ';
+               // while(!c.empty() && c.top() != '(')
+               // {
+                    output += c.pop();
+                    output += ' ';
+              //  }
                 c.push(expression[i]);
             }
-            else
+            else if (c.top() == '+' || c.top() == '-')
             c.push(expression[i]);
         }
+        
+        else if (expression[i] == '(')
+        {
+            c.push(expression[i]);
+        }
+        else if (expression[i] == ')')
+        {
+            while(!c.empty() && c.top() != '(' )
+            {output += c.pop(); output += ' ';}
+            c.pop();
+        }
         while(!c.empty())
-        output += c.pop();
+        {output += c.pop(); output += " ";}
         return output;
+    }
+
+    int evaluate(string expression)
+    {
+        stack<int> s;
+        for(int i=0; i<expression.length(); i++)
+        {
+            if(expression[i] >= '0' && expression[i] <= '9')
+            {
+                int total = 0;
+                while(expression[i] >= '0' && expression[i] <= '9')
+                {
+                    total = total * 10 + (expression[i] - '0');
+                    i++;
+                }
+                s.push(total);
+            }
+            else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/')
+            {
+                int total;
+                int left;
+                int right;
+                switch(expression[i])
+                {
+                    case '+' : right = s.pop(); left = s.pop(); total = left + right; break;
+                    case '-' : right = s.pop(); left = s.pop(); total = left - right; break;
+                    case '*' : right = s.pop(); left = s.pop(); total = left * right; break;
+                    case '/' : right = s.pop(); left = s.pop();
+                    if(right == 0)
+                    throw runtime_error (" division by zero ");
+                    total = left / right; break;
+                }
+                s.push(total);
+            }
+            else if (expression[i] == ' ')
+            continue;
+
+            else
+            throw runtime_error("bad string value");
+
+        }
+        return s.pop();
     }
 
 int main()
 {
-    string s = "2-3+4-5";
+    string s = "37 - 4 * (12 + 3) / 3 + 2 * (8 - 5)";
     s = func(s);
     cout << s;
+    int fin = evaluate(s);
+    cout << fin;
     return 0;
 }
