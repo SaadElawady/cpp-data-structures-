@@ -66,8 +66,8 @@ void stack<T>::push(const T& var)
 template <typename T>
 T stack<T>::pop()
 {
-     if(empty())
-     throw runtime_error("empty stack");
+    if(empty())
+    throw runtime_error("empty stack");
     node<T>* temp = first;
     T tempval = first->elem;
     first = first->next;
