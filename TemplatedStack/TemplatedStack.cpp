@@ -18,7 +18,7 @@ class stack
       int n;
     public:
     stack();
-    stack(const stack& s);
+    stack(const stack<T>& s);
     stack<T>& operator = (const stack<T>& s);
     int size() const;
     bool empty() const;

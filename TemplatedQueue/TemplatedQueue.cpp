@@ -2,64 +2,69 @@
 #include <stdexcept>
 using namespace std;
 
+template <typename T>
 struct node
 {
     int elem;
-    node* next;
+    node<T>* next;
 };
 
+template <typename T>
 class queue
 {
     private:
-      node* first;
-      node* last;
+      node<T>* first;
+      node<T>* last;
       int n;
     public:
       queue();
       int size() const;
       bool empty() const;
-      int front() const;
-      queue(const queue& q);
-      queue& operator= (const queue& q);
-      void enqueue( int var);
+      T front() const;
+      queue(const queue<T>& q);
+      queue<T>& operator= (const queue<T>& q);
+      void enqueue(T var);
       int dequeue();
       void display() const;
       ~queue();
 
 };
 
-queue::queue() : first(nullptr), last(nullptr), n(0) {}
+template <typename T>
+queue<T>::queue() : first(nullptr), last(nullptr), n(0) {}
 
-int queue::size() const
+template <typename T>
+int queue<T>::size() const
 {
     return n;
 }
 
-bool queue::empty() const
+template <typename T>
+bool queue<T>::empty() const
 {
     return n == 0;
 }
 
-int queue::front() const
+template <typename T>
+T queue<T>::front() const
 {
     if(empty())
     throw runtime_error("empty queue\n");
     return first->elem;
 }
 
-queue::queue(const queue& q) : first(nullptr), last(nullptr), n(0)
+template <typename T>
+queue<T>::queue(const queue<T>& q) : first(nullptr), last(nullptr), n(0)
 {
-    node* temp = q.first; 
+    node<T>* temp = q.first; 
     {
        while(temp != nullptr)
        {
-       node* newnode = new node;
+       node<T>* newnode = new node<T>;
        newnode->elem = temp->elem;
        newnode->next = nullptr;
        if(empty())
-       {
         first = last = newnode;
-       }
        else
        {
         last->next = newnode;
@@ -72,15 +77,14 @@ queue::queue(const queue& q) : first(nullptr), last(nullptr), n(0)
     }
 }
 
-void queue::enqueue(int var)
+template <typename T>
+void queue<T>::enqueue(T var)
 {
-    node* newnode = new node;
+    node<T>* newnode = new node<T>;
     newnode->elem = var;
     newnode->next = nullptr;
     if(empty())
-    {
-        first = last = newnode;
-    }
+    first = last = newnode;
     else
     {
         last->next = newnode;
@@ -89,41 +93,39 @@ void queue::enqueue(int var)
     n++;
 }
 
-int queue::dequeue()
+template <typename T>
+int queue<T>::dequeue()
 {
     if(empty())
     throw runtime_error("empty queue\n");
-    node* temp = first;
-    int val = temp->elem;
+    node<T>* temp = first;
+    T val = temp->elem;
     if(size() == 1)
-    {
-        first = last = nullptr;
-    }
+    first = last = nullptr;
+
     else
-    {
-        first = first->next;
-    }
+    first = first->next;
+
     delete temp;
     n--;
     return val;
 }
 
-queue& queue::operator= (const queue& q)
+template <typename T>
+queue<T>& queue<T>::operator= (const queue<T>& q)
 {
     if (this == &q)
     return *this;
     while(!empty())
     dequeue();
-    node* temp = q.first;
+    node<T>* temp = q.first;
     while(temp != nullptr)
     {
-       node* newnode = new node;
+       node<T>* newnode = new node<T>;
        newnode->elem = temp->elem;
        newnode->next = nullptr;
        if(empty())
-       {
         first = last = newnode;
-       }
        else
        {
         last->next = newnode;
@@ -136,15 +138,17 @@ queue& queue::operator= (const queue& q)
     return *this;
 }
 
-queue::~queue()
+template <typename T>
+queue<T>::~queue()
 {
     while(!empty())
     dequeue();
 }
 
-void queue::display() const
+template <typename T>
+void queue<T>::display() const
 {
-    node* temp = first;
+    node<T>* temp = first;
     while(temp != nullptr)
     {
         cout << temp->elem << " ";
@@ -153,7 +157,7 @@ void queue::display() const
     cout << endl;
 }
 
-int joeseph(const queue& q, int k)
+int joeseph(const queue<int>& q, int k)
 {
     queue temp = q;
     while(temp.size() > 1)
@@ -170,7 +174,7 @@ int joeseph(const queue& q, int k)
 
 int main()
 {
-    queue q1;
+    queue<int> q1;
     q1.enqueue(1);
     q1.enqueue(2);
     q1.enqueue(3);
@@ -178,7 +182,12 @@ int main()
     q1.enqueue(5);
     q1.enqueue(6);
     q1.enqueue(7);
-    int x = joeseph(q1,3);
-    cout << x;
+    //int x = joeseph(q1,3);
+    //cout << x;
+    queue<int> q2(q1);
+    queue<int> q3;
+    q3 = q2;
+    q3 = q3;
+    q3.display();
     return 0;
 }
